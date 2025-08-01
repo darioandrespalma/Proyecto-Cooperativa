@@ -1,0 +1,202 @@
+/* Estilos para la sección Hero */
+.hero-section {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 2rem 1rem;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+}
+
+.hero-content {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.hero-title {
+    font-size: 2.5rem;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+}
+
+.hero-subtitle {
+    font-size: 1.5rem;
+    color: #0056b3;
+    margin-bottom: 1rem;
+    font-weight: 500;
+}
+
+.hero-secondary {
+    font-size: 1.1rem;
+    color: #34495e;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+
+/* Estilos para secciones comunes */
+.section-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.section-title {
+    font-size: 2rem;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.section-subtitle {
+    font-size: 1.2rem;
+    color: #7f8c8d;
+    margin-bottom: 1rem;
+}
+
+/* Estilos para la sección de rutas */
+.routes-section {
+    padding: 3rem 1rem;
+    background-color: white;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.routes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.route-card {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 1.5rem;
+    transition: transform 0.3s, box-shadow 0.3s;
+    border-left: 4px solid #0056b3;
+}
+
+.route-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.route-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.route-card h3 {
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.route-card p {
+    color: #7f8c8d;
+    line-height: 1.5;
+}
+
+/* Estilos para la sección de beneficios */
+.benefits-section {
+    padding: 3rem 1rem;
+    background-color: #f5f7fa;
+}
+
+.benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.benefit-card {
+    background-color: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s;
+}
+
+.benefit-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.benefit-icon {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+}
+
+.benefit-card h3 {
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.benefit-card p {
+    color: #7f8c8d;
+    line-height: 1.5;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.2rem;
+    }
+    
+    .section-title {
+        font-size: 1.5rem;
+    }
+    
+    .routes-grid, .benefits-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Contenedor para el botón de acción principal */
+.registration-cta {
+    margin-top: 2rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+/* Estilo del botón principal */
+.primary-action-btn {
+    background: #0056b3;
+    color: white;
+    border: none;
+    padding: 0.8rem 1.8rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.primary-action-btn:hover {
+    background: #003d82;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.primary-action-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* Versión alternativa para secciones oscuras */
+.dark-section .primary-action-btn {
+    background: #f39c12;
+    color: #2c3e50;
+}
+
+.dark-section .primary-action-btn:hover {
+    background: #e67e22;
+}

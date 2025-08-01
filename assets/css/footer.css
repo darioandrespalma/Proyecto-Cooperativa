@@ -1,0 +1,207 @@
+
+
+/* Estilos mejorados del footer */
+.site-footer {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    padding: 2rem 0 0;
+    font-size: 1rem;
+    line-height: 1.6;
+    font-family: Arial, sans-serif;
+}
+
+.footer-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.footer-section {
+    margin-bottom: 1.5rem;
+}
+
+.footer-heading {
+    color: #f39c12;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* Sección de contacto */
+.contact-info address p {
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: flex-start;
+    line-height: 1.5;
+}
+
+.contact-info i {
+    margin-right: 0.8rem;
+    color: #f39c12;
+    width: 20px;
+    text-align: center;
+}
+
+.contact-info a {
+    color: #ecf0f1;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.contact-info a:hover {
+    color: #f39c12;
+}
+
+/* Enlaces rápidos */
+.quick-links ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.quick-links li {
+    margin-bottom: 0.8rem;
+}
+
+.quick-links a {
+    color: #ecf0f1;
+    text-decoration: none;
+    transition: color 0.3s;
+    display: block;
+}
+
+.quick-links a:hover {
+    color: #f39c12;
+}
+
+/* Controles de accesibilidad */
+.accessibility-section {
+    display: flex;
+    flex-direction: column;
+}
+
+.accessibility-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.accessibility-btn {
+    background-color: #34495e;
+    color: #ecf0f1;
+    border: none;
+    border-radius: 4px;
+    padding: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 0.9rem;
+}
+
+.accessibility-btn:hover {
+    background-color: #f39c12;
+    color: #2c3e50;
+}
+
+.accessibility-notice {
+    font-size: 0.8rem;
+    color: #bdc3c7;
+    margin-top: 1rem;
+    line-height: 1.4;
+}
+
+/* Redes sociales */
+.social-section {
+    display: flex;
+    flex-direction: column;
+}
+
+.social-icons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.social-icon {
+    color: #ecf0f1;
+    background-color: #34495e;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+}
+
+.social-icon:hover {
+    background-color: #f39c12;
+    color: #2c3e50;
+}
+
+/* Footer inferior */
+.footer-bottom {
+    background-color: #1a252f;
+    padding: 1.5rem 1rem;
+    text-align: center;
+    font-size: 0.9rem;
+    margin-top: 2rem;
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.footer-bottom p {
+    margin: 0;
+    line-height: 1.5;
+}
+
+.credits {
+    color: #bdc3c7;
+    font-size: 0.8rem;
+}
+
+/* Estilos para móvil */
+@media (max-width: 768px) {
+    .footer-container {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .footer-bottom {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .footer-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .footer-section {
+        text-align: center;
+    }
+    
+    .contact-info address p {
+        justify-content: center;
+    }
+    
+    .quick-links ul {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .accessibility-controls {
+        justify-content: center;
+    }
+    
+    .social-icons {
+        justify-content: center;
+    }
+}

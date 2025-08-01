@@ -59,8 +59,8 @@
         
         <!-- Copyright y créditos -->
         <div class="footer-bottom">
-            <p>&copy; <?= date('Y') ?> Cooperativa de Transporte. Todos los derechos reservados.</p>
-            <p class="credits">Sistema de reservas v2.0 - Desarrollado con <i class="fas fa-heart" aria-hidden="true"></i> para nuestros pasajeros</p>
+            <p>&copy; <?= date('Y') ?> Cooperativa de Transporte Espejo. Todos los derechos reservados.</p>
+            <p class="credits">Sistema de reservas v2.0 - Desarrollado con <i class="fas fa-heart" aria-hidden="true"></i> Master Software</p>
         </div>
     </footer>
     
