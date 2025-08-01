@@ -299,7 +299,11 @@ body.high-contrast h2 {
     color: #ff0;
 }
 
-/* Formularios */
+
+
+
+/* ==================== */
+/* Formularios ---- contact.php */
 .form-group {
     margin-bottom: 1.5rem;
 }
@@ -342,6 +346,11 @@ button:hover, .cta-button:hover {
     background: #5a6268;
 }
 
+
+
+
+
+/* ==================== */
 /* Rutas */
 .routes-grid {
     display: grid;
@@ -371,6 +380,8 @@ button:hover, .cta-button:hover {
     font-weight: bold;
 }
 
+
+/* ==================== */
 /* Asientos */
 .bus-layout {
     display: flex;
@@ -409,6 +420,9 @@ button:hover, .cta-button:hover {
     border-color: #218838;
 }
 
+
+
+/* ==================== */
 /* Pagos */
 .payment-options {
     display: flex;
