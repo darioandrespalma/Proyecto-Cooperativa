@@ -1,0 +1,228 @@
+/* Estilos generales */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f9f9f9;
+}
+
+header {
+    background: #0056b3;
+    color: white;
+    padding: 1rem 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+    justify-content: center;
+}
+
+nav ul li {
+    margin: 0 15px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+main {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 20px;
+}
+
+section {
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+h1, h2 {
+    color: #0056b3;
+    margin-bottom: 1.5rem;
+}
+
+/* Contraste alto */
+body.high-contrast {
+    background: #000;
+    color: #fff;
+}
+
+body.high-contrast header {
+    background: #000;
+}
+
+body.high-contrast section {
+    background: #333;
+    border: 2px solid #fff;
+}
+
+body.high-contrast h1, 
+body.high-contrast h2 {
+    color: #ff0;
+}
+
+/* Formularios */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+button, .cta-button {
+    background: #0056b3;
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+button:hover, .cta-button:hover {
+    background: #003d82;
+}
+
+.secondary {
+    background: #6c757d;
+}
+
+.secondary:hover {
+    background: #5a6268;
+}
+
+/* Rutas */
+.routes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.route-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1.5rem;
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+}
+
+.route-card:hover, .route-card:focus {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    outline: none;
+}
+
+.route-link {
+    display: inline-block;
+    margin-top: 1rem;
+    color: #0056b3;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* Asientos */
+.bus-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 2rem;
+}
+
+.bus-row {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.seat {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    background: #f8f9fa;
+}
+
+.seat:hover, .seat:focus {
+    background: #e9ecef;
+    outline: none;
+}
+
+.seat.selected {
+    background: #28a745;
+    color: white;
+    border-color: #218838;
+}
+
+/* Pagos */
+.payment-options {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 1.5rem;
+}
+
+.payment-method {
+    padding: 0.8rem 1.5rem;
+    background: #e9ecef;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.payment-method.active {
+    background: #0056b3;
+    color: white;
+}
+
+.payment-form {
+    margin-top: 1.5rem;
+}
+
+/* Factura */
+.invoice-details {
+    background: #f8f9fa;
+    padding: 2rem;
+    border-radius: 8px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .routes-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .bus-row {
+        flex-wrap: wrap;
+    }
+}
