@@ -67,7 +67,5 @@
     <!-- Scripts de accesibilidad -->
     <script src="assets/js/a11y.js"></script>
     
-    <!-- Font Awesome para íconos (versión local para portabilidad) -->
-    <link rel="stylesheet" href="assets/css/fontawesome.min.css">
 </body>
 </html>

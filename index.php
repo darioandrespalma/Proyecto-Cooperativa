@@ -8,6 +8,9 @@
             <p class="hero-subtitle">Tu viaje seguro, cómodo y puntual con Espejo.</p>
             <p class="hero-secondary">Planifica tu viaje con anticipación. Elige tu ruta, horario y asiento ideal. Todo en pocos clics, con total seguridad, usabilidad y accesibilidad.</p>
             <div class="registration-cta">
+                <a href="login.php" class="primary-action-btn">Iniciar Sesión</a>
+            </div>
+            <div class="registration-cta">
                 <a href="register.php" class="primary-action-btn">Registrarse y Reservar</a>
             </div>
         </div>
