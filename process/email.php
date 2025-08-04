@@ -3,9 +3,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 // Incluye PHPMailer (ajusta la ruta si usas Composer)
-require_once __DIR__ . '/../vendor/phpmailer/src/PHPMailer.php';
-require_once __DIR__ . '/../vendor/phpmailer/src/Exception.php';
-require_once __DIR__ . '/../vendor/phpmailer/src/SMTP.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../includes/db_connect.php';
 
 function sendConfirmationEmail($passenger_id, $reservation_id) {
@@ -59,8 +57,8 @@ function sendConfirmationEmail($passenger_id, $reservation_id) {
 
         $mail->send();
         return true;
-    } catch (Exception $e) {
-        // Puedes guardar el error en un log si lo deseas: error_log($e->getMessage());
+    } catch (\Exception $e) {
+        echo "Error al enviar correo: " . $mail->ErrorInfo;
         return false;
     }
 }
