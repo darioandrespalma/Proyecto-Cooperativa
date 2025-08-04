@@ -119,8 +119,4 @@ function generateInvoice($reservation_id) {
     return $numero_factura;
 }
 
-function sendConfirmationEmail($passenger_id, $reservation_id) {
-    // Simulación de envío de correo
-    return true;
-}
 ?>
