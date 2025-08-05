@@ -47,6 +47,19 @@ $asientos = $stmt_seats->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <style>
+/* Clase para contenido solo para lectores de pantalla */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
 .confirmation-container {
     max-width: 800px;
     margin: 0 auto;
@@ -330,54 +343,59 @@ $asientos = $stmt_seats->fetchAll(PDO::FETCH_ASSOC);
 </style>
 
 <div class="confirmation-container">
-    <!-- Encabezado de Éxito -->
-    <div class="success-header">
-        <div class="success-icon">✅</div>
-        <h1>¡Pago Exitoso!</h1>
-        <p>Tu reserva ha sido confirmada y procesada correctamente</p>
+    <!-- Anuncio para lectores de pantalla -->
+    <div role="status" aria-live="polite" class="sr-only">
+        Pago exitoso. Tu reserva ha sido confirmada y procesada correctamente.
     </div>
+    
+    <!-- Encabezado de Éxito -->
+    <header class="success-header" role="banner">
+        <div class="success-icon" aria-hidden="true">✅</div>
+        <h1 id="main-title">¡Pago Exitoso!</h1>
+        <p>Tu reserva ha sido confirmada y procesada correctamente</p>
+    </header>
 
     <?php if ($reserva): ?>
         <!-- Detalles de la Reserva -->
-        <div class="reservation-details">
-            <div class="detail-section">
-                <h3>📋 Información de la Reserva</h3>
+        <main class="reservation-details" role="main">
+            <section class="detail-section" aria-labelledby="reservation-info">
+                <h2 id="reservation-info">📋 Información de la Reserva</h2>
                 <div class="detail-grid">
                     <div>
                         <div class="detail-item">
                             <strong>Número de Reserva:</strong>
-                            <span style="color: #007bff; font-weight: bold;">#<?= str_pad($reserva['reserva_id'], 6, '0', STR_PAD_LEFT) ?></span>
+                            <span style="color: #007bff; font-weight: bold;" aria-label="Número de reserva">#<?= str_pad($reserva['reserva_id'], 6, '0', STR_PAD_LEFT) ?></span>
                         </div>
                         <div class="detail-item">
                             <strong>Fecha de Reserva:</strong>
-                            <span><?= date('d/m/Y H:i', strtotime($reserva['fecha_reserva'])) ?></span>
+                            <span><time datetime="<?= date('Y-m-d\TH:i', strtotime($reserva['fecha_reserva'])) ?>"><?= date('d/m/Y H:i', strtotime($reserva['fecha_reserva'])) ?></time></span>
                         </div>
                         <div class="detail-item">
                             <strong>Estado:</strong>
-                            <span style="color: #28a745; font-weight: bold; text-transform: uppercase;"><?= htmlspecialchars($reserva['estado']) ?></span>
+                            <span style="color: #28a745; font-weight: bold; text-transform: uppercase;" aria-label="Estado de la reserva: confirmada"><?= htmlspecialchars($reserva['estado']) ?></span>
                         </div>
                     </div>
                     <div>
                         <div class="detail-item">
                             <strong>Número de Factura:</strong>
-                            <span style="color: #6f42c1; font-weight: bold;"><?= htmlspecialchars($reserva['numero_factura']) ?></span>
+                            <span style="color: #6f42c1; font-weight: bold;" aria-label="Número de factura"><?= htmlspecialchars($reserva['numero_factura']) ?></span>
                         </div>
                         <div class="detail-item">
                             <strong>Fecha de Pago:</strong>
-                            <span><?= date('d/m/Y H:i', strtotime($reserva['fecha_pago'])) ?></span>
+                            <span><time datetime="<?= date('Y-m-d\TH:i', strtotime($reserva['fecha_pago'])) ?>"><?= date('d/m/Y H:i', strtotime($reserva['fecha_pago'])) ?></time></span>
                         </div>
                         <div class="detail-item">
                             <strong>Método de Pago:</strong>
-                            <span class="method-badge method-<?= $reserva['metodo'] ?>">
+                            <span class="method-badge method-<?= $reserva['metodo'] ?>" aria-label="Método de pago: <?= $reserva['metodo'] === 'transferencia' ? 'Transferencia bancaria' : 'Tarjeta de crédito o débito' ?>">
                                 <?= $reserva['metodo'] === 'transferencia' ? 'Transferencia' : 'Tarjeta' ?>
                             </span>
                         </div>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            <div class="detail-section">
-                <h3>👤 Información del Pasajero</h3>
+            <section class="detail-section" aria-labelledby="passenger-info">
+                <h2 id="passenger-info">👤 Información del Pasajero</h2>
                 <div class="detail-grid">
                     <div>
                         <div class="detail-item">
@@ -396,10 +414,10 @@ $asientos = $stmt_seats->fetchAll(PDO::FETCH_ASSOC);
                         </div>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            <div class="detail-section">
-                <h3>🚌 Detalles del Viaje</h3>
+            <section class="detail-section" aria-labelledby="trip-details">
+                <h2 id="trip-details">🚌 Detalles del Viaje</h2>
                 <div class="detail-grid">
                     <div>
                         <div class="detail-item">
@@ -433,49 +451,49 @@ $asientos = $stmt_seats->fetchAll(PDO::FETCH_ASSOC);
                 
                 <div class="detail-item">
                     <strong>Asientos Reservados:</strong>
-                    <div class="seats-display">
+                    <div class="seats-display" role="list" aria-label="Lista de asientos reservados">
                         <?php 
                         $seat_map = ['ventana_izq'=>'A', 'pasillo_izq'=>'B', 'pasillo_der'=>'C', 'ventana_der'=>'D'];
                         foreach($asientos as $asiento): 
                         ?>
-                            <span class="seat-badge">
+                            <span class="seat-badge" role="listitem" aria-label="Asiento fila <?= $asiento['fila'] ?> posición <?= $seat_map[$asiento['posicion']] ?? '?' ?>">
                                 Fila <?= $asiento['fila'] ?><?= $seat_map[$asiento['posicion']] ?? '?' ?>
                             </span>
                         <?php endforeach; ?>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            <div class="detail-section">
-                <h3>💰 Resumen de Pago</h3>
-                <div class="payment-summary">
-                    <div class="payment-row">
-                        <span>Precio por asiento:</span>
-                        <span>$<?= number_format($reserva['precio'], 2) ?></span>
+            <section class="detail-section" aria-labelledby="payment-summary">
+                <h2 id="payment-summary">💰 Resumen de Pago</h2>
+                <div class="payment-summary" role="table" aria-label="Desglose de costos del pago">
+                    <div class="payment-row" role="row">
+                        <span role="cell">Precio por asiento:</span>
+                        <span role="cell">$<?= number_format($reserva['precio'], 2) ?></span>
                     </div>
-                    <div class="payment-row">
-                        <span>Cantidad de asientos:</span>
-                        <span><?= $reserva['num_asientos'] ?></span>
+                    <div class="payment-row" role="row">
+                        <span role="cell">Cantidad de asientos:</span>
+                        <span role="cell"><?= $reserva['num_asientos'] ?></span>
                     </div>
-                    <div class="payment-row">
-                        <span>Subtotal:</span>
-                        <span>$<?= number_format($reserva['subtotal'], 2) ?></span>
+                    <div class="payment-row" role="row">
+                        <span role="cell">Subtotal:</span>
+                        <span role="cell">$<?= number_format($reserva['subtotal'], 2) ?></span>
                     </div>
-                    <div class="payment-row">
-                        <span>IVA (12%):</span>
-                        <span>$<?= number_format($reserva['iva'], 2) ?></span>
+                    <div class="payment-row" role="row">
+                        <span role="cell">IVA (12%):</span>
+                        <span role="cell">$<?= number_format($reserva['iva'], 2) ?></span>
                     </div>
-                    <div class="payment-row payment-total">
-                        <span>TOTAL PAGADO:</span>
-                        <span>$<?= number_format($reserva['total'], 2) ?></span>
+                    <div class="payment-row payment-total" role="row">
+                        <span role="cell">TOTAL PAGADO:</span>
+                        <span role="cell" aria-label="Total pagado: <?= number_format($reserva['total'], 2) ?> dólares">$<?= number_format($reserva['total'], 2) ?></span>
                     </div>
                 </div>
-            </div>
-        </div>
+            </section>
+        </main>
 
         <!-- Información Importante -->
-        <div class="important-info">
-            <h4>📋 Información Importante:</h4>
+        <aside class="important-info" role="complementary" aria-labelledby="important-info-title">
+            <h3 id="important-info-title">📋 Información Importante:</h3>
             <ul>
                 <li>Debes presentarte en la terminal 30 minutos antes de la hora de salida</li>
                 <li>Lleva contigo tu cédula de identidad original</li>
@@ -483,20 +501,25 @@ $asientos = $stmt_seats->fetchAll(PDO::FETCH_ASSOC);
                 <li>En caso de cancelación, comunícate con nosotros con al menos 24 horas de anticipación</li>
                 <li>El equipaje de mano no debe exceder los 10kg</li>
             </ul>
-        </div>
+        </aside>
 
         <!-- Botones de Acción -->
-        <div class="action-buttons no-print">
-            <button onclick="window.print()" class="btn btn-success">
-                📄 Imprimir Comprobante
+        <nav class="action-buttons no-print" role="navigation" aria-label="Acciones disponibles">
+            <button onclick="window.print()" class="btn btn-success" aria-describedby="print-description">
+                <span aria-hidden="true">📄</span> Imprimir Comprobante
             </button>
-            <a href="my_reservations.php" class="btn btn-secondary">
-                📋 Ver Mis Reservas
+            <span id="print-description" class="sr-only">Imprime el comprobante de tu reserva</span>
+            
+            <a href="my_reservations.php" class="btn btn-secondary" aria-describedby="reservations-description">
+                <span aria-hidden="true">📋</span> Ver Mis Reservas
             </a>
-            <a href="index.php" class="btn btn-secondary">
-                🏠 Volver al Inicio
+            <span id="reservations-description" class="sr-only">Ve a la página de todas tus reservas</span>
+            
+            <a href="index.php" class="btn btn-secondary" aria-describedby="home-description">
+                <span aria-hidden="true">🏠</span> Volver al Inicio
             </a>
-        </div>
+            <span id="home-description" class="sr-only">Regresa a la página principal</span>
+        </nav>
 
         <!-- Información solo para impresión -->
         <div class="print-only">
@@ -510,14 +533,14 @@ $asientos = $stmt_seats->fetchAll(PDO::FETCH_ASSOC);
         </div>
 
     <?php else: ?>
-        <div class="reservation-details">
-            <p style="text-align: center; color: #dc3545; font-size: 1.2rem;">
-                ❌ No se encontraron detalles de la reserva
-            </p>
+        <main class="reservation-details" role="main">
+            <div role="alert" aria-live="assertive" style="text-align: center; color: #dc3545; font-size: 1.2rem;">
+                <span aria-hidden="true">❌</span> No se encontraron detalles de la reserva
+            </div>
             <div style="text-align: center; margin-top: 20px;">
                 <a href="index.php" class="btn btn-primary">Volver al Inicio</a>
             </div>
-        </div>
+        </main>
     <?php endif; ?>
 </div>
 
