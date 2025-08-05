@@ -181,11 +181,13 @@ function openModifyModal(reservationId) {
 
     const confirmButton = document.getElementById('confirm-modify');
     if (confirmButton) {
-        confirmButton.onclick = function() {
+        confirmButton.onclick = function () {
+            // Redirigir al archivo PHP con el ID de la reserva
             window.location.href = `modify_reservation.php?id=${reservationId}`;
         };
     }
 }
+
 
 /**
  * Abre el modal de cancelación de reserva
@@ -258,6 +260,60 @@ function hideLoadingState(button) {
         button.innerHTML = button.originalText;
     }
 }
+
+
+function openModifyModal(reservationId) {
+    const modal = document.getElementById('modify-modal');
+    if (!modal) return;
+
+    modal.style.display = 'flex';
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+
+    // Establece el ID en el formulario
+    document.getElementById('reservation-id').value = reservationId;
+}
+
+function closeModifyModal() {
+    const modal = document.getElementById('modify-modal');
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+// Enviar datos al servidor
+document.getElementById('modify-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const reservationId = document.getElementById('reservation-id').value;
+    const newDate = document.getElementById('new-date').value;
+    const newTime = document.getElementById('new-time').value;
+
+    fetch('update_reservation.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            reservation_id: reservationId,
+            new_date: newDate,
+            new_time: newTime
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Reserva modificada correctamente');
+            location.reload(); // O actualiza solo esa fila
+        } else {
+            alert('Error al modificar: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error en fetch:', error);
+    });
+});
+
+
 
 // Exportar funciones para uso global
 window.toggleDetails = toggleDetails;
