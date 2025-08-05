@@ -53,6 +53,50 @@ if ($reserva) {
 ?>
 
 <style>
+/* Clase para contenido solo para lectores de pantalla */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Mejoras de foco para accesibilidad */
+button:focus,
+input:focus,
+a:focus {
+    outline: 3px solid #005fcc;
+    outline-offset: 2px;
+}
+
+/* Indicadores de estado para lectores de pantalla */
+.form-group.error input {
+    border-color: #dc3545;
+    background-color: #fff5f5;
+}
+
+.form-group.success input {
+    border-color: #28a745;
+    background-color: #f8fff8;
+}
+
+/* Estilos para mensajes de error */
+.error-text {
+    color: #dc3545;
+    font-size: 0.875em;
+    margin-top: 5px;
+    display: none;
+}
+
+.error-text.show {
+    display: block;
+}
+
 .payment-container {
     max-width: 800px;
     margin: 0 auto;
@@ -299,19 +343,24 @@ if ($reserva) {
 </style>
 
 <div class="payment-container">
-    <section aria-labelledby="payment-title">
+    <!-- Anuncio para lectores de pantalla -->
+    <div role="status" aria-live="polite" class="sr-only" id="payment-status">
+        Página de proceso de pago cargada
+    </div>
+    
+    <main role="main">
         <h1 id="payment-title">Proceso de Pago</h1>
 
         <?php if (isset($_SESSION['error'])): ?>
-            <div class="error-message">
+            <div class="error-message" role="alert" aria-live="assertive">
                 <?= htmlspecialchars($_SESSION['error']) ?>
             </div>
             <?php unset($_SESSION['error']); ?>
         <?php endif; ?>
 
         <!-- Resumen de la Reserva -->
-        <div class="reservation-summary">
-            <h2>Resumen de tu Reserva</h2>
+        <section class="reservation-summary" aria-labelledby="reservation-summary-title">
+            <h2 id="reservation-summary-title">Resumen de tu Reserva</h2>
             
             <?php if ($reserva): ?>
                 <div class="summary-grid">
@@ -357,12 +406,12 @@ if ($reserva) {
                 
                 <div class="summary-item">
                     <strong>Asientos Seleccionados:</strong>
-                    <div class="seats-display">
+                    <div class="seats-display" role="list" aria-label="Lista de asientos seleccionados">
                         <?php 
                         $seat_map = ['ventana_izq'=>'A', 'pasillo_izq'=>'B', 'pasillo_der'=>'C', 'ventana_der'=>'D'];
                         foreach($asientos as $asiento): 
                         ?>
-                            <span class="seat-badge">
+                            <span class="seat-badge" role="listitem" aria-label="Asiento fila <?= $asiento['fila'] ?> posición <?= $seat_map[$asiento['posicion']] ?? '?' ?>">
                                 <?= $asiento['fila'] . ($seat_map[$asiento['posicion']] ?? '?') ?>
                             </span>
                         <?php endforeach; ?>
@@ -370,120 +419,160 @@ if ($reserva) {
                 </div>
                 
                 <!-- Resumen de Costos -->
-                <div class="payment-total">
-                    <div class="total-row">
-                        <span>Precio por asiento:</span>
-                        <span>$<?= number_format($reserva['precio'], 2) ?></span>
+                <div class="payment-total" role="table" aria-label="Desglose de costos">
+                    <div class="total-row" role="row">
+                        <span role="cell">Precio por asiento:</span>
+                        <span role="cell">$<?= number_format($reserva['precio'], 2) ?></span>
                     </div>
-                    <div class="total-row">
-                        <span>Cantidad de asientos:</span>
-                        <span><?= $reserva['num_asientos'] ?></span>
+                    <div class="total-row" role="row">
+                        <span role="cell">Cantidad de asientos:</span>
+                        <span role="cell"><?= $reserva['num_asientos'] ?></span>
                     </div>
-                    <div class="total-row">
-                        <span>Subtotal:</span>
-                        <span>$<?= number_format($subtotal, 2) ?></span>
+                    <div class="total-row" role="row">
+                        <span role="cell">Subtotal:</span>
+                        <span role="cell">$<?= number_format($subtotal, 2) ?></span>
                     </div>
-                    <div class="total-row">
-                        <span>IVA (12%):</span>
-                        <span>$<?= number_format($iva, 2) ?></span>
+                    <div class="total-row" role="row">
+                        <span role="cell">IVA (12%):</span>
+                        <span role="cell">$<?= number_format($iva, 2) ?></span>
                     </div>
-                    <div class="total-row total-final">
-                        <span>TOTAL A PAGAR:</span>
-                        <span>$<?= number_format($total, 2) ?></span>
+                    <div class="total-row total-final" role="row">
+                        <span role="cell">TOTAL A PAGAR:</span>
+                        <span role="cell" aria-label="Total a pagar: <?= number_format($total, 2) ?> dólares">$<?= number_format($total, 2) ?></span>
                     </div>
                 </div>
                 
             <?php else: ?>
                 <p>No se encontró información de la reserva.</p>
             <?php endif; ?>
-        </div>
+        </section>
 
         <!-- Métodos de Pago -->
-        <h2>Selecciona tu Método de Pago</h2>
-        <div class="payment-methods">
-            <button id="btn-transferencia" class="payment-method active" aria-pressed="true">
-                <strong>💳 Transferencia Bancaria</strong><br>
-                <small>Sube tu comprobante de pago</small>
-            </button>
-            <button id="btn-tarjeta" class="payment-method" aria-pressed="false">
-                <strong>💳 Tarjeta de Crédito/Débito</strong><br>
-                <small>Pago inmediato y seguro</small>
-            </button>
-        </div>
+        <section aria-labelledby="payment-methods-title">
+            <h2 id="payment-methods-title">Selecciona tu Método de Pago</h2>
+            <div class="payment-methods" role="radiogroup" aria-labelledby="payment-methods-title">
+                <button id="btn-transferencia" class="payment-method active" 
+                        role="radio" aria-checked="true" 
+                        aria-describedby="transferencia-desc">
+                    <strong><span aria-hidden="true">💳</span> Transferencia Bancaria</strong><br>
+                    <small id="transferencia-desc">Sube tu comprobante de pago</small>
+                </button>
+                <button id="btn-tarjeta" class="payment-method" 
+                        role="radio" aria-checked="false"
+                        aria-describedby="tarjeta-desc">
+                    <strong><span aria-hidden="true">💳</span> Tarjeta de Crédito/Débito</strong><br>
+                    <small id="tarjeta-desc">Pago inmediato y seguro</small>
+                </button>
+            </div>
+        </section>
 
         <!-- Formulario de Pago -->
-        <form id="payment-form" action="process/payment.php" method="post" enctype="multipart/form-data">
-            <input type="hidden" name="metodo" id="payment-method" value="transferencia">
-            
-            <!-- Formulario de Transferencia -->
-            <div id="transferencia-form" class="payment-form">
-                <h3>Información de Transferencia</h3>
-                
-                <div class="bank-info">
-                    <h4>Datos Bancarios - Cooperativa de Transporte</h4>
-                    <p><strong>Banco:</strong> Banco del Pacífico</p>
-                    <p><strong>Cuenta Corriente:</strong> 0123456789</p>
-                    <p><strong>RUC:</strong> 1234567890001</p>
-                    <p><strong>Beneficiario:</strong> Cooperativa de Transporte Intercantonal</p>
-                    <p><strong>Monto a transferir:</strong> $<?= number_format($total, 2) ?></p>
+        <section aria-labelledby="payment-form-title">
+            <h2 id="payment-form-title" class="sr-only">Formulario de Pago</h2>
+            <form id="payment-form" action="process/payment.php" method="post" enctype="multipart/form-data" 
+                  novalidate aria-describedby="form-instructions">
+                <div id="form-instructions" class="sr-only">
+                    Completa la información del método de pago seleccionado. Los campos marcados con asterisco son obligatorios.
                 </div>
+                <input type="hidden" name="metodo" id="payment-method" value="transferencia">
                 
-                <div class="form-group">
-                    <label for="referencia">Número de Referencia de la Transferencia*</label>
-                    <input type="text" id="referencia" name="referencia" required 
-                           placeholder="Ingresa el número de referencia de tu transferencia">
-                </div>
-                
-                <div class="form-group">
-                    <label for="comprobante">Comprobante de Transferencia*</label>
-                    <div class="file-upload-area" onclick="document.getElementById('comprobante').click()">
-                        <p>📎 Haz clic aquí para subir tu comprobante</p>
-                        <p><small>Formatos permitidos: JPG, PNG, PDF (máx. 5MB)</small></p>
+                <!-- Formulario de Transferencia -->
+                <fieldset id="transferencia-form" class="payment-form" aria-labelledby="transferencia-title">
+                    <legend id="transferencia-title">Información de Transferencia</legend>
+                    
+                    <div class="bank-info" role="region" aria-labelledby="bank-info-title">
+                        <h3 id="bank-info-title">Datos Bancarios - Cooperativa de Transporte</h3>
+                        <p><strong>Banco:</strong> Banco del Pacífico</p>
+                        <p><strong>Cuenta Corriente:</strong> 0123456789</p>
+                        <p><strong>RUC:</strong> 1234567890001</p>
+                        <p><strong>Beneficiario:</strong> Cooperativa de Transporte Intercantonal</p>
+                        <p><strong>Monto a transferir:</strong> $<?= number_format($total, 2) ?></p>
                     </div>
-                    <input type="file" id="comprobante" name="comprobante" 
-                           accept="image/*,.pdf" required style="display: none;">
-                    <div id="file-preview" style="margin-top: 10px;"></div>
-                </div>
-            </div>
-            
-            <!-- Formulario de Tarjeta -->
-            <div id="tarjeta-form" class="payment-form" style="display:none;">
-                <h3>Información de Tarjeta</h3>
-                
-                <div class="form-group">
-                    <label for="numero_tarjeta">Número de Tarjeta*</label>
-                    <input type="text" id="numero_tarjeta" name="numero_tarjeta" 
-                           placeholder="1234 5678 9012 3456" maxlength="19">
-                </div>
-                
-                <div class="form-row">
+                    
                     <div class="form-group">
-                        <label for="fecha_vencimiento">Fecha de Vencimiento*</label>
-                        <input type="text" id="fecha_vencimiento" name="fecha_vencimiento" 
-                               placeholder="MM/AA" maxlength="5">
+                        <label for="referencia">Número de Referencia de la Transferencia*</label>
+                        <input type="text" id="referencia" name="referencia" required 
+                               placeholder="Al menos 6 dígitos"
+                               aria-invalid="false">
+                        <div id="referencia-help" class="sr-only">Ingresa el número de referencia proporcionado por tu banco, debe tener al menos 6 dígitos</div>
+                        <div id="referencia-error" class="error-text" role="alert" aria-live="polite"></div>
                     </div>
+                    
                     <div class="form-group">
-                        <label for="cvv">CVV*</label>
-                        <input type="text" id="cvv" name="cvv" 
-                               placeholder="123" maxlength="3">
+                        <label for="comprobante">Comprobante de Transferencia*</label>
+                        <div class="file-upload-area" onclick="document.getElementById('comprobante').click()" 
+                             role="button" tabindex="0" 
+                             aria-describedby="comprobante-help"
+                             onkeydown="if(event.key==='Enter'||event.key===' ') document.getElementById('comprobante').click()">
+                            <p><span aria-hidden="true">📎</span> Haz clic aquí para subir tu comprobante</p>
+                            <p><small>Formatos permitidos: JPG, PNG, PDF (máx. 5MB)</small></p>
+                        </div>
+                        <input type="file" id="comprobante" name="comprobante" 
+                               accept="image/*,.pdf" required style="display: none;"
+                               aria-describedby="comprobante-help comprobante-error"
+                               aria-invalid="false">
+                        <div id="comprobante-help" class="sr-only">Sube una imagen o PDF del comprobante de tu transferencia bancaria</div>
+                        <div id="comprobante-error" class="error-text" role="alert" aria-live="polite"></div>
+                        <div id="file-preview" style="margin-top: 10px;" aria-live="polite"></div>
                     </div>
-                </div>
-                
-                <div style="background: #fff3cd; border: 1px solid #ffeeba; padding: 10px; border-radius: 4px; margin-top: 15px;">
-                    <small>🔒 Este es un sistema de demostración. Los datos de la tarjeta se procesan de forma simulada.</small>
-                </div>
-            </div>
+                </fieldset>
+            
+                <!-- Formulario de Tarjeta -->
+                <fieldset id="tarjeta-form" class="payment-form" style="display:none;" aria-labelledby="tarjeta-title">
+                    <legend id="tarjeta-title">Información de Tarjeta</legend>
+                    
+                    <div class="form-group">
+                        <label for="numero_tarjeta">Número de Tarjeta*</label>
+                        <input type="text" id="numero_tarjeta" name="numero_tarjeta" 
+                               placeholder="1234 5678 9012 3456" maxlength="19"
+                               aria-describedby="tarjeta-help tarjeta-error"
+                               aria-invalid="false"
+                               autocomplete="cc-number">
+                        <div id="tarjeta-help" class="sr-only">Ingresa los 16 dígitos de tu tarjeta de crédito o débito</div>
+                        <div id="tarjeta-error" class="error-text" role="alert" aria-live="polite"></div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fecha_vencimiento">Fecha de Vencimiento*</label>
+                            <input type="text" id="fecha_vencimiento" name="fecha_vencimiento" 
+                                   placeholder="MM/AA" maxlength="5"
+                                   aria-describedby="fecha-help fecha-error"
+                                   aria-invalid="false"
+                                   autocomplete="cc-exp">
+                            <div id="fecha-help" class="sr-only">Fecha de vencimiento en formato MM/AA</div>
+                            <div id="fecha-error" class="error-text" role="alert" aria-live="polite"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="cvv">CVV*</label>
+                            <input type="text" id="cvv" name="cvv" 
+                                   placeholder="123" maxlength="3"
+                                   aria-describedby="cvv-help cvv-error"
+                                   aria-invalid="false"
+                                   autocomplete="cc-csc">
+                            <div id="cvv-help" class="sr-only">Código de 3 dígitos en la parte posterior de tu tarjeta</div>
+                            <div id="cvv-error" class="error-text" role="alert" aria-live="polite"></div>
+                        </div>
+                    </div>
+                    
+                    <div style="background: #fff3cd; border: 1px solid #ffeeba; padding: 10px; border-radius: 4px; margin-top: 15px;" role="note">
+                        <small><span aria-hidden="true">🔒</span> Este es un sistema de demostración. Los datos de la tarjeta se procesan de forma simulada.</small>
+                    </div>
+                </fieldset>
 
-            <div class="loading-spinner" id="loading-spinner">
-                <div class="spinner"></div>
-                <p>Procesando tu pago...</p>
-            </div>
+                <div class="loading-spinner" id="loading-spinner" aria-hidden="true">
+                    <div class="spinner" aria-hidden="true"></div>
+                    <p>Procesando tu pago...</p>
+                </div>
 
-            <button type="submit" class="btn-submit" id="submit-btn">
-                Realizar Pago por $<?= number_format($total, 2) ?>
-            </button>
-        </form>
-    </section>
+                <button type="submit" class="btn-submit" id="submit-btn"
+                        aria-describedby="submit-help">
+                    Realizar Pago por $<?= number_format($total, 2) ?>
+                </button>
+                <div id="submit-help" class="sr-only">Al hacer clic procesarás el pago y confirmarás tu reserva</div>
+            </form>
+        </section>
+    </main>
 </div>
 
 <script>
@@ -499,40 +588,61 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Cambio de método de pago
     btnTransferencia.addEventListener('click', function() {
-        this.classList.add('active');
-        this.setAttribute('aria-pressed', 'true');
-        btnTarjeta.classList.remove('active');
-        btnTarjeta.setAttribute('aria-pressed', 'false');
-        formTransferencia.style.display = 'block';
-        formTarjeta.style.display = 'none';
-        paymentMethod.value = 'transferencia';
-        
-        // Actualizar campos requeridos
-        document.getElementById('comprobante').required = true;
-        document.getElementById('referencia').required = true;
-        document.getElementById('numero_tarjeta').required = false;
-        document.getElementById('fecha_vencimiento').required = false;
-        document.getElementById('cvv').required = false;
+        setPaymentMethod('transferencia', this, btnTarjeta, formTransferencia, formTarjeta);
     });
 
     btnTarjeta.addEventListener('click', function() {
-        this.classList.add('active');
-        this.setAttribute('aria-pressed', 'true');
-        btnTransferencia.classList.remove('active');
-        btnTransferencia.setAttribute('aria-pressed', 'false');
-        formTransferencia.style.display = 'none';
-        formTarjeta.style.display = 'block';
-        paymentMethod.value = 'tarjeta';
-        
-        // Actualizar campos requeridos
-        document.getElementById('comprobante').required = false;
-        document.getElementById('referencia').required = false;
-        document.getElementById('numero_tarjeta').required = true;
-        document.getElementById('fecha_vencimiento').required = true;
-        document.getElementById('cvv').required = true;
+        setPaymentMethod('tarjeta', this, btnTransferencia, formTarjeta, formTransferencia);
     });
     
-    // Manejo de archivo
+    // Función para cambiar método de pago con accesibilidad
+    function setPaymentMethod(method, activeBtn, inactiveBtn, showForm, hideForm) {
+        // Actualizar botones
+        activeBtn.classList.add('active');
+        activeBtn.setAttribute('aria-checked', 'true');
+        inactiveBtn.classList.remove('active');
+        inactiveBtn.setAttribute('aria-checked', 'false');
+        
+        // Mostrar/ocultar formularios
+        showForm.style.display = 'block';
+        hideForm.style.display = 'none';
+        hideForm.setAttribute('aria-hidden', 'true');
+        showForm.removeAttribute('aria-hidden');
+        
+        // Actualizar valor del método
+        paymentMethod.value = method;
+        
+        // Enfocar primer campo del formulario activo
+        const firstInput = showForm.querySelector('input:not([type="hidden"])');
+        if (firstInput) {
+            setTimeout(() => firstInput.focus(), 100);
+        }
+        
+        // Anunciar cambio para lectores de pantalla
+        const statusEl = document.getElementById('payment-status');
+        statusEl.textContent = `Método de pago cambiado a ${method === 'transferencia' ? 'transferencia bancaria' : 'tarjeta de crédito'}`;
+        
+        // Actualizar campos requeridos
+        updateRequiredFields(method);
+    }
+    
+    function updateRequiredFields(method) {
+        if (method === 'transferencia') {
+            document.getElementById('comprobante').required = true;
+            document.getElementById('referencia').required = true;
+            document.getElementById('numero_tarjeta').required = false;
+            document.getElementById('fecha_vencimiento').required = false;
+            document.getElementById('cvv').required = false;
+        } else {
+            document.getElementById('comprobante').required = false;
+            document.getElementById('referencia').required = false;
+            document.getElementById('numero_tarjeta').required = true;
+            document.getElementById('fecha_vencimiento').required = true;
+            document.getElementById('cvv').required = true;
+        }
+    }
+    
+    // Manejo de archivo con accesibilidad
     const comprobanteInput = document.getElementById('comprobante');
     const filePreview = document.getElementById('file-preview');
     
@@ -541,25 +651,71 @@ document.addEventListener('DOMContentLoaded', function() {
         if (file) {
             const fileSize = (file.size / 1024 / 1024).toFixed(2);
             filePreview.innerHTML = `
-                <div style="background: #d4edda; border: 1px solid #c3e6cb; padding: 10px; border-radius: 4px;">
+                <div style="background: #d4edda; border: 1px solid #c3e6cb; padding: 10px; border-radius: 4px;" role="status">
                     <strong>Archivo seleccionado:</strong> ${file.name}<br>
                     <small>Tamaño: ${fileSize} MB</small>
                 </div>
             `;
+            
+            // Validar tamaño inmediatamente
+            if (file.size > 5 * 1024 * 1024) {
+                showFieldError('comprobante', 'El archivo es demasiado grande. Máximo 5MB');
+            } else {
+                clearFieldError('comprobante');
+            }
         }
     });
     
-    // Formateo de número de tarjeta
+    // Funciones para manejo de errores
+    function showFieldError(fieldId, message) {
+        const field = document.getElementById(fieldId);
+        const errorDiv = document.getElementById(fieldId + '-error');
+        const formGroup = field.closest('.form-group');
+        
+        field.setAttribute('aria-invalid', 'true');
+        formGroup.classList.add('error');
+        formGroup.classList.remove('success');
+        
+        if (errorDiv) {
+            errorDiv.textContent = message;
+            errorDiv.classList.add('show');
+        }
+    }
+    
+    function clearFieldError(fieldId) {
+        const field = document.getElementById(fieldId);
+        const errorDiv = document.getElementById(fieldId + '-error');
+        const formGroup = field.closest('.form-group');
+        
+        field.setAttribute('aria-invalid', 'false');
+        formGroup.classList.remove('error');
+        formGroup.classList.add('success');
+        
+        if (errorDiv) {
+            errorDiv.textContent = '';
+            errorDiv.classList.remove('show');
+        }
+    }
+    
+    // Formateo de número de tarjeta con validación
     const numeroTarjeta = document.getElementById('numero_tarjeta');
     if (numeroTarjeta) {
         numeroTarjeta.addEventListener('input', function() {
             let value = this.value.replace(/\D/g, '');
             value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
             this.value = value;
+            
+            // Validación en tiempo real
+            const cleanValue = value.replace(/\s/g, '');
+            if (cleanValue.length > 0 && cleanValue.length < 16) {
+                showFieldError('numero_tarjeta', 'El número de tarjeta debe tener 16 dígitos');
+            } else if (cleanValue.length === 16) {
+                clearFieldError('numero_tarjeta');
+            }
         });
     }
     
-    // Formateo de fecha de vencimiento
+    // Formateo de fecha de vencimiento con validación
     const fechaVencimiento = document.getElementById('fecha_vencimiento');
     if (fechaVencimiento) {
         fechaVencimiento.addEventListener('input', function() {
@@ -568,48 +724,102 @@ document.addEventListener('DOMContentLoaded', function() {
                 value = value.substring(0, 2) + '/' + value.substring(2, 4);
             }
             this.value = value;
+            
+            // Validación en tiempo real
+            if (value.length === 5) {
+                const [mes, año] = value.split('/');
+                const fechaActual = new Date();
+                const añoCompleto = 2000 + parseInt(año);
+                const fechaTarjeta = new Date(añoCompleto, parseInt(mes) - 1);
+                
+                if (parseInt(mes) < 1 || parseInt(mes) > 12) {
+                    showFieldError('fecha_vencimiento', 'Mes inválido (01-12)');
+                } else if (fechaTarjeta < fechaActual) {
+                    showFieldError('fecha_vencimiento', 'La tarjeta está vencida');
+                } else {
+                    clearFieldError('fecha_vencimiento');
+                }
+            }
         });
     }
     
-    // Solo números en CVV
-    const cvvInput = document.getElementById('cvv');
-    if (cvvInput) {
-        cvvInput.addEventListener('input', function() {
-            this.value = this.value.replace(/\D/g, '');
-        });
-    }
     
-    // Solo números en referencia
-    const referenciaInput = document.getElementById('referencia');
-    if (referenciaInput) {
-        referenciaInput.addEventListener('input', function() {
-            this.value = this.value.replace(/\D/g, '');
-        });
-    }
     
-    // Manejo del envío del formulario
+    // Limita a solo números y a un máximo de 6 dígitos
+function limitarNumeros(inputId, maxDigitos) {
+    const input = document.getElementById(inputId);
+    if (!input) return;
+
+    input.addEventListener('input', function () {
+        // Quitar todo lo que no sea número
+        this.value = this.value.replace(/\D/g, '');
+
+        // Limitar a máximo X dígitos
+        if (this.value.length > maxDigitos) {
+            this.value = this.value.slice(0, maxDigitos);
+        }
+
+        // Limpia el mensaje si se cumple el mínimo
+        if (this.value.length >= 6) {
+            mostrarError('', inputId); // limpiar
+        }
+    });
+}
+
+// Mostrar mensaje de error en el div asociado
+function mostrarError(mensaje, inputId) {
+    const errorDiv = document.getElementById(`${inputId}-error`);
+    if (errorDiv) {
+        errorDiv.textContent = mensaje;
+    }
+
+    const input = document.getElementById(inputId);
+    if (mensaje) {
+        input.setAttribute('aria-invalid', 'true');
+        input.style.border = '2px solid red';
+    } else {
+        input.removeAttribute('aria-invalid');
+        input.style.border = '';
+    }
+}
+// Limitar a 6 números como máximo
+    limitarNumeros('referencia', 6);
+
+    // Validar al salir del campo
+    document.getElementById('referencia').addEventListener('blur', function () {
+        if (this.value.length < 6) {
+            mostrarError('El número de referencia debe tener al menos 6 dígitos', 'referencia');
+        } else {
+            mostrarError('', 'referencia'); // limpiar
+        }
+    });
+
+    
+    // Manejo del envío del formulario con accesibilidad mejorada
     paymentForm.addEventListener('submit', function(e) {
         e.preventDefault();
         
-        // Validaciones adicionales
+        // Limpiar errores previos
+        clearAllErrors();
+        
+        let hasErrors = false;
+        
+        // Validaciones según método de pago
         if (paymentMethod.value === 'transferencia') {
             const referencia = document.getElementById('referencia').value;
             const comprobante = document.getElementById('comprobante').files[0];
             
             if (!referencia || referencia.length < 6) {
-                alert('El número de referencia debe tener al menos 6 dígitos');
-                return;
+                showFieldError('referencia', 'El número de referencia debe tener al menos 6 dígitos');
+                hasErrors = true;
             }
             
             if (!comprobante) {
-                alert('Debes subir el comprobante de transferencia');
-                return;
-            }
-            
-            // Validar tamaño del archivo
-            if (comprobante.size > 5 * 1024 * 1024) {
-                alert('El archivo es demasiado grande. Máximo 5MB');
-                return;
+                showFieldError('comprobante', 'Debes subir el comprobante de transferencia');
+                hasErrors = true;
+            } else if (comprobante.size > 5 * 1024 * 1024) {
+                showFieldError('comprobante', 'El archivo es demasiado grande. Máximo 5MB');
+                hasErrors = true;
             }
             
         } else if (paymentMethod.value === 'tarjeta') {
@@ -618,46 +828,114 @@ document.addEventListener('DOMContentLoaded', function() {
             const cvv = document.getElementById('cvv').value;
             
             if (numeroTarjeta.length !== 16) {
-                alert('El número de tarjeta debe tener 16 dígitos');
-                return;
+                showFieldError('numero_tarjeta', 'El número de tarjeta debe tener 16 dígitos');
+                hasErrors = true;
             }
             
             if (!/^\d{2}\/\d{2}$/.test(fechaVenc)) {
-                alert('Formato de fecha inválido (MM/AA)');
-                return;
-            }
-            
-            // Validar que la fecha no esté vencida
-            const [mes, año] = fechaVenc.split('/');
-            const fechaActual = new Date();
-            const añoCompleto = 2000 + parseInt(año);
-            const fechaTarjeta = new Date(añoCompleto, parseInt(mes) - 1);
-            
-            if (fechaTarjeta < fechaActual) {
-                alert('La tarjeta está vencida');
-                return;
+                showFieldError('fecha_vencimiento', 'Formato de fecha inválido (MM/AA)');
+                hasErrors = true;
+            } else {
+                // Validar que la fecha no esté vencida
+                const [mes, año] = fechaVenc.split('/');
+                const fechaActual = new Date();
+                const añoCompleto = 2000 + parseInt(año);
+                const fechaTarjeta = new Date(añoCompleto, parseInt(mes) - 1);
+                
+                if (fechaTarjeta < fechaActual) {
+                    showFieldError('fecha_vencimiento', 'La tarjeta está vencida');
+                    hasErrors = true;
+                }
             }
             
             if (cvv.length !== 3) {
-                alert('El CVV debe tener 3 dígitos');
-                return;
+                showFieldError('cvv', 'El CVV debe tener 3 dígitos');
+                hasErrors = true;
             }
+        }
+        
+        if (hasErrors) {
+            // Enfocar el primer campo con error
+            const firstError = document.querySelector('.form-group.error input');
+            if (firstError) {
+                firstError.focus();
+            }
+            
+            // Anunciar error para lectores de pantalla
+            const statusEl = document.getElementById('payment-status');
+            statusEl.textContent = 'Por favor corrige los errores en el formulario';
+            return;
         }
         
         // Mostrar loading y deshabilitar botón
         submitBtn.disabled = true;
         submitBtn.textContent = 'Procesando...';
+        submitBtn.setAttribute('aria-busy', 'true');
         loadingSpinner.style.display = 'block';
+        loadingSpinner.setAttribute('aria-hidden', 'false');
+        
+        // Anunciar procesamiento
+        const statusEl = document.getElementById('payment-status');
+        statusEl.textContent = 'Procesando pago, por favor espera...';
         
         // Enviar formulario
         this.submit();
     });
+    
+    function clearAllErrors() {
+        const errorElements = document.querySelectorAll('.error-text');
+        errorElements.forEach(el => {
+            el.textContent = '';
+            el.classList.remove('show');
+        });
+        
+        const formGroups = document.querySelectorAll('.form-group');
+        formGroups.forEach(group => {
+            group.classList.remove('error');
+        });
+        
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.setAttribute('aria-invalid', 'false');
+        });
+    }
     
     // Prevenir doble envío
     let submitted = false;
     paymentForm.addEventListener('submit', function() {
         if (submitted) return false;
         submitted = true;
+    });
+    
+    // Navegación por teclado para área de subida de archivos
+    const fileUploadArea = document.querySelector('.file-upload-area');
+    if (fileUploadArea) {
+        fileUploadArea.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                document.getElementById('comprobante').click();
+            }
+        });
+    }
+    
+    // Manejadores de eventos de radiogroup para métodos de pago
+    document.addEventListener('keydown', function(e) {
+        const focusedElement = document.activeElement;
+        if (focusedElement.classList.contains('payment-method')) {
+            if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (focusedElement === btnTarjeta) {
+                    btnTransferencia.click();
+                    btnTransferencia.focus();
+                }
+            } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                if (focusedElement === btnTransferencia) {
+                    btnTarjeta.click();
+                    btnTarjeta.focus();
+                }
+            }
+        }
     });
 });
 </script>
