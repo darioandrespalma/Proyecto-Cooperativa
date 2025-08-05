@@ -1,4 +1,4 @@
-<?php 
+<?php
 require_once 'includes/header.php';
 require_once 'includes/db_connect.php';
 
@@ -9,7 +9,7 @@ $mensaje = '';
 // Procesar búsqueda
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cedula'])) {
     $cedula_busqueda = trim($_POST['cedula']);
-    
+
     // Nueva validación: solo verificar que sea un número de 10 dígitos
     if (!preg_match('/^[0-9]{10}$/', $cedula_busqueda)) {
         $mensaje = "La cédula debe ser un número de 10 dígitos.";
@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cedula'])) {
             $check_passenger = $pdo->prepare("SELECT id, nombre, apellido FROM passengers WHERE cedula = ?");
             $check_passenger->execute([$cedula_busqueda]);
             $passenger = $check_passenger->fetch(PDO::FETCH_ASSOC);
-            
+
             if (!$passenger) {
                 $mensaje = "No se encontró ningún pasajero registrado con la cédula: " . htmlspecialchars($cedula_busqueda);
             } else {
@@ -75,17 +75,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cedula'])) {
                     WHERE pa.cedula = ?
                     ORDER BY r.fecha_reserva DESC
                 ");
-                
+
                 $stmt->execute([$cedula_busqueda]);
                 $reservas = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                
+
                 if (empty($reservas)) {
                     $mensaje = "El pasajero " . htmlspecialchars($passenger['nombre'] . " " . $passenger['apellido']) . " no tiene reservas registradas.";
                 } else {
                     $mensaje = "Se encontraron " . count($reservas) . " reserva(s) para " . htmlspecialchars($passenger['nombre'] . " " . $passenger['apellido']);
                 }
             }
-            
+
         } catch (PDOException $e) {
             $mensaje = "Ocurrió un error en la base de datos. Detalle: " . $e->getMessage();
         }
@@ -97,27 +97,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cedula'])) {
     <div class="breadcrumb">
         <a href="index.php">Inicio</a> > Mis Reservas
     </div>
-    
+
     <h1 id="reservations-title">Mis Reservas</h1>
     <p class="intro">Consulte y gestione sus reservas ingresando su número de cédula.</p>
-    
+
     <!-- Formulario de búsqueda -->
     <div class="search-container">
         <form method="post" class="search-form" id="reservation-search">
             <div class="form-group">
                 <label for="cedula">Número de Cédula*</label>
-                <input 
-                    type="text" 
-                    id="cedula" 
-                    name="cedula" 
-                    value="<?= htmlspecialchars($cedula_busqueda) ?>"
-                    required 
-                    aria-required="true"
-                    placeholder="Ej: 1234567890"
-                    pattern="[0-9]{10}"
-                    title="Ingrese un número de cédula válido (10 dígitos)"
-                    maxlength="10"
-                >
+                <input type="text" id="cedula" name="cedula" value="<?= htmlspecialchars($cedula_busqueda) ?>" required
+                    aria-required="true" placeholder="Ej: 1234567890" pattern="[0-9]{10}"
+                    title="Ingrese un número de cédula válido (10 dígitos)" maxlength="10">
                 <div class="error-message" aria-live="polite"></div>
             </div>
             <button type="submit" class="search-button">
@@ -126,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cedula'])) {
             </button>
         </form>
     </div>
-    
+
     <!-- Mensaje de estado -->
     <?php if (!empty($mensaje)): ?>
         <div class="message-container">
@@ -135,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cedula'])) {
             </div>
         </div>
     <?php endif; ?>
-    
+
     <!-- Resultados de reservas -->
     <?php if (!empty($reservas)): ?>
         <div class="reservations-container">
@@ -147,14 +138,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cedula'])) {
                         </h3>
                         <div class="reservation-status" style="display: flex; gap: 8px; align-items: center;">
                             <span class="status-badge status-<?= strtolower($reserva['estado_reserva']) ?>">
-                               Estado Reserva: <?= ucfirst($reserva['estado_reserva']) ?>
+                                Estado Reserva: <?= ucfirst($reserva['estado_reserva']) ?>
                             </span>
                             <span class="payment-badge payment-<?= strtolower($reserva['estado_pago']) ?>">
-                               Estado Pago: <?= ucfirst($reserva['estado_pago']) ?>
+                                Estado Pago: <?= ucfirst($reserva['estado_pago']) ?>
                             </span>
                         </div>
                     </header>
-                    
+
                     <div class="reservation-details">
                         <div class="detail-section">
                             <h4>🚌 Información del Viaje</h4>
@@ -177,7 +168,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cedula'])) {
                                 </div>
                                 <div class="detail-item">
                                     <span class="detail-label">Bus:</span>
-                                    <span class="detail-value"><?= htmlspecialchars(($reserva['bus_placa'] ?? 'N/A') . ' (' . ($reserva['tipo_bus'] ?? 'N/A') . ')') ?></span>
+                                    <span
+                                        class="detail-value"><?= htmlspecialchars(($reserva['bus_placa'] ?? 'N/A') . ' (' . ($reserva['tipo_bus'] ?? 'N/A') . ')') ?></span>
                                 </div>
                                 <div class="detail-item">
                                     <span class="detail-label">Asientos:</span>
@@ -187,17 +179,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cedula'])) {
                                 </div>
                                 <div class="detail-item">
                                     <span class="detail-label">Precio Total:</span>
-                                    <span class="detail-value price-total">$<?= number_format($reserva['precio_total'] ?? 0, 2) ?></span>
+                                    <span
+                                        class="detail-value price-total">$<?= number_format($reserva['precio_total'] ?? 0, 2) ?></span>
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="detail-section">
                             <h4>👤 Información del Pasajero</h4>
                             <div class="detail-grid">
                                 <div class="detail-item">
                                     <span class="detail-label">Nombre:</span>
-                                    <span class="detail-value"><?= htmlspecialchars(($reserva['nombre'] ?? 'N/A') . ' ' . ($reserva['apellido'] ?? '')) ?></span>
+                                    <span
+                                        class="detail-value"><?= htmlspecialchars(($reserva['nombre'] ?? 'N/A') . ' ' . ($reserva['apellido'] ?? '')) ?></span>
                                 </div>
                                 <div class="detail-item">
                                     <span class="detail-label">Cédula:</span>
@@ -206,47 +200,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cedula'])) {
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Acciones de la reserva -->
                     <footer class="reservation-actions">
                         <div class="action-buttons">
-                            <?php 
-                            // Calcula si la reserva es futura y si la hora de viaje es al menos 1 hora en el futuro.
+
+                            <?php
+                            /*// Calcula si la reserva es futura y si la hora de viaje es al menos 1 hora en el futuro.
                             $fecha_viaje = strtotime(($reserva['fecha_viaje'] ?? '') . ' ' . ($reserva['hora_viaje'] ?? ''));
                             $es_futura = $fecha_viaje > time();
                             // El cambio aquí: la cancelación es posible hasta 1 hora antes del viaje (1*3600 segundos).
                             $puede_cancelar = $fecha_viaje > (time() + 1*3600); 
+                            */
                             ?>
-                            
-                            <?php if ($es_futura && strtolower($reserva['estado_reserva'] ?? '') !== 'cancelado'): ?>
-                                <button class="action-btn btn-details" onclick="toggleDetails(<?= $reserva['numero_reserva'] ?>)" aria-expanded="false" aria-controls="expanded-details-<?= $reserva['numero_reserva'] ?>">
-                                    <span class="btn-icon">👁️</span>
+
+                            <?php if (strtolower($reserva['estado_reserva'] ?? '') !== 'cancelado'): ?>
+                                <button class="action-btn btn-details" onclick="toggleDetails(<?= $reserva['numero_reserva'] ?>)"
+                                    aria-expanded="false" aria-controls="expanded-details-<?= $reserva['numero_reserva'] ?>">
+                                    <span class="btn-icon">👁</span>
                                     Ver Detalles
                                 </button>
-                                
-                                <?php if ($puede_cancelar): ?>
+
                                 <button class="action-btn btn-modify" onclick="openModifyModal(<?= $reserva['numero_reserva'] ?>)">
-                                    <span class="btn-icon">✏️</span>
+                                    <span class="btn-icon">✏</span>
                                     Modificar
                                 </button>
                                 <button class="action-btn btn-cancel" onclick="openCancelModal(<?= $reserva['numero_reserva'] ?>)">
                                     <span class="btn-icon">❌</span>
                                     Cancelar
                                 </button>
-                                <?php else: ?>
-                                <span class="action-disabled">
-                                    <span class="btn-icon">🚫</span>
-                                    No se puede modificar/cancelar (menos de 1h)
-                                </span>
-                                <?php endif; ?>
+
 
                                 <?php if ($reserva['numero_factura']): ?>
-                                <a href="download_invoice.php?reservation_id=<?= $reserva['numero_reserva'] ?>" class="action-btn btn-download">
-                                    <span class="btn-icon">📄</span>
-                                    Factura
-                                </a>
+                                    <a href="download_invoice.php?reservation_id=<?= $reserva['numero_reserva'] ?>"
+                                        class="action-btn btn-download">
+                                        <span class="btn-icon">📄</span>
+                                        Factura
+                                    </a>
                                 <?php endif; ?>
-                            
+
                             <?php else: ?>
                                 <span class="status-cancelled">
                                     <?= strtolower($reserva['estado_reserva'] ?? '') === 'cancelado' ? 'Reserva Cancelada' : 'Viaje Finalizado' ?>
@@ -254,13 +246,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cedula'])) {
                             <?php endif; ?>
                         </div>
                     </footer>
-                    
+
                     <!-- Detalles expandibles -->
-                    <div id="expanded-details-<?= $reserva['numero_reserva'] ?>" class="reservation-expanded-details" style="display: none;">
+                    <div id="expanded-details-<?= $reserva['numero_reserva'] ?>" class="reservation-expanded-details"
+                        style="display: none;">
                         <div class="expanded-content">
                             <h4>📋 Detalles Adicionales</h4>
                             <div class="additional-info">
-                                <p><strong>Fecha de Reserva:</strong> <?= $reserva['fecha_reserva'] ? date('d/m/Y H:i', strtotime($reserva['fecha_reserva'])) : 'N/A' ?></p>
+                                <p><strong>Fecha de Reserva:</strong>
+                                    <?= $reserva['fecha_reserva'] ? date('d/m/Y H:i', strtotime($reserva['fecha_reserva'])) : 'N/A' ?>
+                                </p>
                                 <p><strong>Email:</strong> <?= htmlspecialchars($reserva['email'] ?? 'N/A') ?></p>
                             </div>
                         </div>
@@ -269,7 +264,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cedula'])) {
             <?php endforeach; ?>
         </div>
     <?php endif; ?>
-    
+
     <!-- Sección de ayuda -->
     <div class="help-section">
         <h2>¿Necesita ayuda?</h2>
@@ -288,25 +283,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cedula'])) {
 </section>
 
 <!-- Modales -->
-<div id="modify-modal" class="modal" style="display: none;" aria-hidden="true" role="dialog" aria-labelledby="modify-title">
-    <div class="modal-content">
-        <header class="modal-header">
-            <h3 id="modify-title">Modificar Reserva</h3>
-            <button class="modal-close" onclick="closeModal('modify-modal')" aria-label="Cerrar modal">×</button>
-        </header>
-        <div class="modal-body">
-            <p>Para modificar su reserva, será redirigido al proceso de selección de nuevos asientos.</p>
-            <p><strong>Nota:</strong> Los cambios pueden estar sujetos a una tarifa de modificación y diferencias de precio.</p>
-            <p><strong>Costo Adicional:</strong> <span>$5.00</span></p>
-        </div>
-        <footer class="modal-footer">
-            <button class="btn-secondary" onclick="closeModal('modify-modal')">Cancelar</button>
-            <button class="btn-primary" id="confirm-modify">Continuar</button>
-        </footer>
+<div id="modify-modal" class="modal" style="display:none;">
+    <div class="modal-content" style="padding: 20px; max-width: 400px; margin: auto; background: #fff; border-radius: 8px;">
+        <h3 style="margin-bottom: 15px;">Modificar Asiento</h3>
+        <form id="modify-form">
+            <input type="hidden" name="reservation_id" id="reservation-id">
+            <label for="new-seat" style="display: block; margin-bottom: 6px; font-weight: 600;">Nuevo Asiento:</label>
+            <input type="text" id="new-seat" name="new_seat" required
+                style="width: 100%; padding: 8px; font-size: 14px; margin-bottom: 15px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
+            
+            <div class="modal-actions" style="display: flex; gap: 10px; justify-content: flex-end;">
+                <button type="submit" id="confirm-modify" 
+                    style="padding: 6px 14px; font-size: 14px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                    Guardar Cambios
+                </button>
+                <button type="button" onclick="closeModifyModal()" 
+                    style="padding: 6px 14px; font-size: 14px; background-color: #ccc; border: none; border-radius: 4px; cursor: pointer;">
+                    Cancelar
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 
-<div id="cancel-modal" class="modal" style="display: none;" aria-hidden="true" role="dialog" aria-labelledby="cancel-title">
+
+
+
+<div id="cancel-modal" class="modal" style="display: none;" aria-hidden="true" role="dialog"
+    aria-labelledby="cancel-title">
     <div class="modal-content">
         <header class="modal-header">
             <h3 id="cancel-title">Cancelar Reserva</h3>
@@ -325,7 +329,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cedula'])) {
             </div>
             <div class="form-group">
                 <label for="cancel-reason">Motivo de cancelación (opcional):</label>
-                <textarea id="cancel-reason" name="cancel_reason" rows="3" placeholder="Ingrese el motivo de la cancelación..."></textarea>
+                <textarea id="cancel-reason" name="cancel_reason" rows="3"
+                    placeholder="Ingrese el motivo de la cancelación..."></textarea>
             </div>
         </div>
         <footer class="modal-footer">
